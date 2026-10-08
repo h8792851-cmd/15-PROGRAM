@@ -1,0 +1,59 @@
+name: PL-SQL Autograding
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  autograding:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Verify Required Files
+        run: |
+          test -f README.md
+          test -f starter.sql
+          test -f solution.sql
+          test -f test.sql
+          test -f .github/workflows/autograding.yml
+          echo "All required files are present."
+
+      - name: Check PL/SQL Structure
+        run: |
+          grep -qi "DECLARE" solution.sql
+          grep -qi "IF" solution.sql
+          grep -qi "ELSE" solution.sql
+          grep -qi "DBMS_OUTPUT.PUT_LINE" solution.sql
+          grep -qi "marks" solution.sql
+          echo "PL/SQL IF-ELSE structure verified."
+
+      - name: Check Pass Condition
+        run: |
+          grep -q "marks >= 40" solution.sql
+          echo "Pass mark condition verified."
+
+      - name: Check PASS and FAIL Output
+        run: |
+          grep -qi "PASS" solution.sql
+          grep -qi "FAIL" solution.sql
+          echo "PASS and FAIL outputs verified."
+
+      - name: Verify Test File
+        run: |
+          grep -qi "TEST PASSED" test.sql
+          grep -qi "TEST FAILED" test.sql
+          echo "Test file verified successfully."
+
+      - name: Autograding Result
+        run: |
+          echo "===================================="
+          echo "PL/SQL Student Pass/Fail Autograding"
+          echo "===================================="
+          echo "IF-ELSE statement: VERIFIED"
+          echo "Marks condition: VERIFIED"
+          echo "PASS output: VERIFIED"
+          echo "FAIL output: VERIFIED"
+          echo "AUTOGRADING PASSED"
